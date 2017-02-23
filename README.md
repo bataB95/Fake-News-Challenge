@@ -20,3 +20,4 @@ Step 2: Feed the two vectors to a decision making network(classification) that h
 POSSIBLE IMPROVEMENT:  
 This is just simplified model of human reading.There are a lot of questions that have not been addressed here. But we will put them into the agenda.  
 1)Similar concepts and even related concepts would stimulate the previous and keep it activated.  
+2)Human reading focus model, trained on eye tracking data, that could alter the decay function
