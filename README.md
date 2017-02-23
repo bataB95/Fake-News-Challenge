@@ -17,3 +17,6 @@ Step 1: For each of the title text and the body text, hold a concept map(a vecto
 
 Step 2: Feed the two vectors to a decision making network(classification) that has four output categories(unrelated,supportive , neutral, contradictory)  
 
+POSSIBLE IMPROVEMENT:  
+This is just simplified model of human reading.There are a lot of questions that have not been addressed here. But we will put them into the agenda.  
+1)Similar concepts and even related concepts would stimulate the previous and keep it activated.  
