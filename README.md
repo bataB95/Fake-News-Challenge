@@ -20,4 +20,6 @@ Step 2: Feed the two vectors to a decision making network(classification) that h
 POSSIBLE IMPROVEMENT:  
 This is just simplified model of human reading.There are a lot of questions that have not been addressed here. But we will put them into the agenda.  
 1)Similar concepts and even related concepts would stimulate the previous and keep it activated.  
-2)Human reading focus model, trained on eye tracking data, that could alter the decay function
+2)Human reading focus model, trained on eye tracking data, that could alter the decay function  
+
+Note that for human mind when there is an ambiguity in the sentence, all the concepts related to the word would be activated, then the top down information steps in to surpress the inapproriate one.
