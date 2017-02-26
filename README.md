@@ -5,6 +5,7 @@ Project Proposal
 
 INTUITION:  
 When we read texts with similar topic, the regions that represent the corresponding concepts light up. Presumably, the more related two texts are, the more similar the firing patterns are.  
+When one concept is invoke, the activation spreads to the nearby concepts.  
 When we read on, the level of activity of the previous concept decays unless something triggers it again.  
 
 
