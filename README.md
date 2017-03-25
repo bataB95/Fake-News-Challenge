@@ -3,24 +3,15 @@ Machine Learning in fighting fake news
 http://www.fakenewschallenge.org/   
 Project Proposal  
 
-INTUITION:  
-When we read texts with similar topic, the regions that represent the corresponding concepts light up. Presumably, the more related two texts are, the more similar the firing patterns are.  
-When one concept is invoke, the activation spreads to the nearby concepts.  
-When we read on, the level of activity of the previous concept decays unless something triggers it again.  
-
 
 FEATURES:  
 In order to reduce the dimension of feature space, we abandon the schema using the full dictionary as features set. Instead, we merge synonyms into disjoint sets(concept) and use them as features.  
 
 
 ALGORITHM:  
-Step 1: For each of the title text and the body text, hold a concept map(a vector with dimension of the total number of concepts in our semantic dictionary).Each column of the map records the activation of concepts seen in the paragraph, then decay the activations by their positions in the sentence with a proper decay function. By doing this, it encodes the order of the words into the concept map.   
+Step 1: Embed all the words into vector representation and add them to, for each of the title text and the body text, hold a concept map(a vector of 50 dimension).   
 
 Step 2: Feed the two vectors to a decision making network(classification) that has four output categories(unrelated,supportive , neutral, contradictory)  
 
-POSSIBLE IMPROVEMENT:  
-This is just simplified model of human reading.There are a lot of questions that have not been addressed here. But we will put them into the agenda.  
-1)Similar concepts and even related concepts would stimulate the previous and keep it activated.  
-2)Human reading focus model, trained on eye tracking data, that could alter the decay function  
-
-Note that for human mind when there is an ambiguity in the sentence, all the concepts related to the word would be activated, then the top down information steps in to surpress the inapproriate one.
+Future research plan:  
+Long short term memory network
