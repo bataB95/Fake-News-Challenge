@@ -14,4 +14,7 @@ Step 1: Embed all the words into vector representation and add them to, for each
 Step 2: Feed the two vectors to a decision making network(classification) that has four output categories(unrelated,supportive , neutral, contradictory)  
 
 Future research plan:  
-Long short term memory network
+Long short term memory network  
+https://www.tensorflow.org/tutorials/seq2seq  
+https://arxiv.org/abs/1406.1078
+
