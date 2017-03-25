@@ -9,7 +9,7 @@ In order to reduce the dimension of feature space, we abandon the schema using t
 
 
 ALGORITHM:  
-Step 1: Embed all the words into vector representation and add them to, for each of the title text and the body text, hold a concept map(a vector of 50 dimension).   
+Step 1: Embed all the words into vector representation and add them to, for each of the title text and the body text, hold a concept map(a vector of 50 dimension).Source:https://nlp.stanford.edu/projects/glove/   
 
 Step 2: Feed the two vectors to a decision making network(classification) that has four output categories(unrelated,supportive , neutral, contradictory)  
 
