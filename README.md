@@ -17,7 +17,8 @@ FILES:
 embedding.py:Perform word embeddment  
 decision_making_network.py: A standard feedforward neural network with 100 hidden nodes  
 experiment.py:Training and testing(single thread, 5-fold cross validation)  
-experimentThreaded:Multiple threading version of experiment(training 5 networks at the same time)  
+experimentThreaded.py:Multiple threading version of experiment(training 5 networks at the same time)  
+experimentPool.py:Multiple processes version of experiment(training 5 networks at the same time)  
 
 Future research plan:  
 Long short term memory network  
