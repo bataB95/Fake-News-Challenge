@@ -12,6 +12,12 @@ ALGORITHM:
 Step 1: Embed all the words into vector representation and add them to, for each of the title text and the body text, hold a concept map(a vector of 50 dimension).Source:https://nlp.stanford.edu/projects/glove/   
 
 Step 2: Feed the two vectors to a decision making network(classification) that has four output categories(unrelated,supportive , neutral, contradictory)  
+  
+FILES:  
+embedding.py:Perform word embeddment  
+decision_making_network.py: A standard feedforward neural network with 100 hidden nodes  
+experiment.py:Training and testing(single thread, 5-fold cross validation)  
+experimentThreaded:Multiple threading version of experiment(training 5 networks at the same time)  
 
 Future research plan:  
 Long short term memory network  
