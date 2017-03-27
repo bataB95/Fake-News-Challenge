@@ -3,7 +3,8 @@ import scorer
 import random
 import csv
 import _thread
-
+import numpy as np
+np.set_printoptions(threshold=np.nan)
 with open('processed_data.csv', encoding="utf8") as csvfile:
     csv_reader=csv.reader(csvfile)
     X=[]
@@ -20,7 +21,6 @@ for i in range(5):
         five_folds[i]=five_folds[i]+X[i*size//5:size-1]
 
 NN=[]
-accuracy=[]
 """
 for i in range(5):
     NN.append(decision_making_network(len(X[0][0]),2*len(X[0][0]),4))
@@ -39,18 +39,33 @@ for i in range(len(accuracy)):
 
 trainDataEagle = [[], [], [], [], []]
 testDataEagle = [[], [], [], [], []]
-
+temp=open("weights.txt","w")
+temp.close()
+temp=open("prediction.txt","w")
+temp.close()
+temp=open("accuracy.txt","w")
+temp.close()
 for i in range(5):
     NN.append(decision_making_network(len(X[0][0]),2*len(X[0][0]),4))
     testDataEagle[i]=testDataEagle[i]+five_folds[i]
     for j in range(5):
         if i!=j:
-            trainDataEagle[i]=trainDataEagle[i]+five_folds[i]
+            trainDataEagle[i]=trainDataEagle[i]+five_folds[j]
 
 def startTraining(networkNum, trainSet, testSet):
-    NN[networkNum].train(trainSet)
-    accuracy.append(NN[networkNum].test(testSet))
-    print(str(networkNum) + "th: " + str(accuracy[networkNum]))
+    NN[networkNum].train(trainSet,100)
+    weight_file=open("weights.txt","a")
+    weight_file.write('\nwi\n')
+    weight_file.write(np.array2string(NN[networkNum].wi))
+    weight_file.write('\nwo\n ')
+    weight_file.write(np.array2string(NN[networkNum].wo))
+    weight_file.write('\n')
+    weight_file.close()
+    accuracy=NN[networkNum].test(testSet)
+    print(str(networkNum) + "th: " + str(accuracy))
+    accuracy_file=open('accuracy.txt','a')
+    accuracy_file.write(str(networkNum)+"th:"+str(accuracy)+"\n")
+    accuracy_file.close()
 
 for i in range(5):
     _thread.start_new_thread(startTraining, (i, trainDataEagle[i], testDataEagle[i]))
