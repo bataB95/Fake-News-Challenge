@@ -50,7 +50,7 @@ for i in range(5):
     testDataEagle[i]=testDataEagle[i]+five_folds[i]
     for j in range(5):
         if i!=j:
-            trainDataEagle[i]=trainDataEagle[i]+five_folds[j]
+            trainDataEagle[i]=trainDataEagle[i]+five_folds[i]
 
 def startTraining(networkNum, trainSet, testSet):
     NN[networkNum].train(trainSet,100)

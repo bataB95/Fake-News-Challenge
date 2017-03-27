@@ -15,12 +15,11 @@ with open('processed_data.csv', encoding="utf8") as csvfile:
 
 five_folds=[[],[],[],[],[]]
 size=len(X)
-#print(size)
 for i in range(5):
     if i!=4:
-        five_folds[i]=five_folds[i]+X[i*(size//5):(i+1)*(size//5)-1]
+        five_folds[i]=five_folds[i]+X[i*size//5:(i+1)*size//5-1]
     else:
-        five_folds[i]=five_folds[i]+X[i*(size//5):size-1]
+        five_folds[i]=five_folds[i]+X[i*size//5:size-1]
 
 NN=[]
 """
@@ -52,12 +51,10 @@ for i in range(5):
     testDataEagle[i]=testDataEagle[i]+five_folds[i]
     for j in range(5):
         if i!=j:
-            trainDataEagle[i]=trainDataEagle[i]+five_folds[j]
-pair=[]
-for i in range(5):
-    pair.append((i, trainDataEagle[i], testDataEagle[i]))
+            trainDataEagle[i]=trainDataEagle[i]+five_folds[i]
+
 def startTraining(networkNum, trainSet, testSet):
-    NN[networkNum].train(trainSet,50)
+    NN[networkNum].train(trainSet,100)
     weight_file=open("weights.txt","a")
     weight_file.write('\nwi\n')
     weight_file.write(np.array2string(NN[networkNum].wi))
@@ -71,5 +68,5 @@ def startTraining(networkNum, trainSet, testSet):
     accuracy_file.write(str(networkNum)+"th:"+str(accuracy)+"\n")
     accuracy_file.close()
 with Pool() as p:
-    p.starmap(startTraining, pair)
+    p.map(startTraining, (i, trainDataEagle[i], testDataEagle[i]))
                 

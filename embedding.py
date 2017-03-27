@@ -17,7 +17,7 @@ print("Start loading training stances\n")
 csv.field_size_limit(sys.maxsize)
 with open('train_stances.csv', encoding="utf8") as csvfile_stance:
     stanceReader=csv.reader(csvfile_stance)
-    stances={}
+    stances=[]
     for row in stanceReader:
         temp=[]
         for c,c_ in zip(row[0],row[0][1:]):
@@ -26,7 +26,7 @@ with open('train_stances.csv', encoding="utf8") as csvfile_stance:
             else:
                 if not c_.isspace():
                     temp.append(" ")
-        stances[row[1]]=[''.join(temp),row[2]]
+        stances.append([''.join(temp),row[1],row[2]])
 print("Finish loading training stances\n")
 print("Start loading training bodies\n")
 with open('train_bodies.csv', encoding="utf8") as csvfile_body:
@@ -43,9 +43,9 @@ with open('train_bodies.csv', encoding="utf8") as csvfile_body:
         bodies[row[0]]=''.join(temp)
 print("Finish loading training bodies")
 print("Start merging training stances and training bodies\n")
-raw_training_set={}
-for key,value in stances.items():
-    raw_training_set[value[0]]=[bodies[key],value[1]]
+raw_training_set=[]
+for set in stances:
+    raw_training_set.append([set[0],bodies[set[1]],set[2]])
     #print(bodies[key])
 print("Finish loading training stanes and training bodies\n")
 stanceReader=None
@@ -55,10 +55,10 @@ bodies=None
 print("Start embedding\n")
 with open('processed_data.csv', "w", encoding="utf8") as csvfile:
     vecWriter=csv.writer(csvfile)
-    for key,value in raw_training_set.items():
-        title=key.split()
-        body=value[0].split()
-        label=value[1]
+    for sample in raw_training_set:
+        title=sample[0].split()
+        body=sample[1].split()
+        label=sample[2]
         titleVec=np.zeros(50)
         bodyVec=np.zeros(50)
         for i in range(len(title)):
@@ -73,5 +73,13 @@ with open('processed_data.csv', "w", encoding="utf8") as csvfile:
                 word=wordVec[body[i]]
                 bodyVec=np.add(bodyVec,word)
         bodyVec=np.divide(bodyVec,np.sqrt((np.dot(bodyVec,bodyVec))))
-        vecWriter.writerow([titleVec,bodyVec,label])
+        if label == "unrelated":
+            label=[1,0,0,0]
+        if label == "discuss":
+            label=[0,1,0,0]
+        if label == "agree":
+            label=[0,0,1,0]
+        if label == "disagree":
+            label=[0,0,0,1]
+        vecWriter.writerow([titleVec-bodyVec,label])
 print("Finish embedding\n")
