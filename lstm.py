@@ -18,7 +18,12 @@ class dataWrapper:
             self.y.append(sample[2])
             self.seqlen_title.append(len(sample[0]))
             self.seqlen_body.append(len(sample[1]))
-    # return the next batch of the data from the data container
+        max_seqlen=max(self.seqlen_body+self.seqlen_title)
+        #padding the samples with zero vectors
+        for i in range(len(self.x_title)):
+            self.x_title[i]+=[[0]*50]*(max_seqlen-len(self.x_title[i]))
+            self.x_body[i]+=[[0]*50]*(max_seqlen-len(self.x_body[i]))
+    # return the next batch of the data from the data set.
     def next(self,batch_size):
         if self.current_batch+batch_size<self.size:
             self.current_batch+=batch_size
@@ -31,13 +36,17 @@ class dataWrapper:
             batch_seqlen_title=np.concatenate(self.seqlen_title[self.current_batch:],self.seqlen_title[:self.current_batch])
             batch_seqlen_body=np.concatenate(self.seqlen_body[self.current_batch:],self.seqlen_body[:self.current_batch])
             return batch_x_title,batch_x_body,batch_y,batch_seqlen_title,batch_seqlen_body
+    # return the length of the longest sequence
     def max_seqlen(self):
         return max(self.seqlen_body+self.seqlen_title)
+
+# loading the data
 data=pickle.load(open("data.p","rb"))
 size=len(data)
 trainset=dataWrapper(data[size//3:])
 testset=dataWrapper(data[:size//3])
 
+#network parameters
 learning_rate=0.001
 training_iters=100000
 batch_size=128
@@ -48,25 +57,33 @@ n_input=50
 n_hidden=60
 n_classes=4
 
+
 x_title=tf.placeholder("float",[None,seq_max_len,n_input])
 x_body=tf.placeholder("float",[None,seq_max_len,n_input])
 y=tf.placeholder("float",[None,n_classes])
 seqlen_title=tf.placeholder(tf.int32,[None])
 seqlen_body=tf.placeholder(tf.int32,[None])
+
+
 weights={'out':tf.Variable(tf.random_normal([n_hidden,n_classes]))}
-biases={'out':tf.Variable(tf.random_normal([n_classes]))}
+biases={'out':tf.Variable(tf.random_normal([1,n_classes]))}
 
 def dynamicRNN(x_title,x_body,seqlen_title,seqlen_body,weights,biases):
-    x_title=tf.unstack(x_title,seq_max_len,1)
-    x_body=tf.unstack(x_body,seq_max_len,1)
 
+    lstm_cell=rnn.BasicLSTMCell(n_hidden)
+    print("testing_1")
+    outputs_title,states_title=tf.nn.dynamic_rnn(cell=lstm_cell,inputs=x_title,sequence_length=seqlen_title,dtype=tf.float32)
 
-    with tf.variable_scope('scope1'):
-        lstm_cell=rnn.BasicLSTMCell(n_hidden)
-    outputs_title,states_title=rnn.static_rnn(cell=lstm_cell,inputs=x_title,sequence_length=seqlen_title,dtype=tf.float32)
-    outputs_body,states_body=rnn.static_rnn(cell=lstm_cell,input=x_body,sequence_length=seqlen_body,dtype=tf.float32)
-
-    return tf.matmul(tf.mul(outputs_title[-1],outputs_body[-1]),weight['out'])+biases['out']
+    with tf.variable_scope('scope1',reuse=None):    
+        print("testing_2")
+        outputs_body,states_body=tf.nn.dynamic_rnn(cell=lstm_cell,inputs=x_body,sequence_length=seqlen_body,dtype=tf.float32)
+        print("testing_3")
+        temp1=[]
+        temp2=[]
+        for i in range(batch_size):
+            temp1.append([i,seqlen_title[i]])
+            temp2.append([i,seqlen_body[i]])
+        return tf.matmul(tf.multiply(tf.gather_nd(outputs_title,temp1),tf.gather_nd(outputs_body,temp2)),weights['out'])+biases['out']
 
 pred=dynamicRNN(x_title,x_body,seqlen_title,seqlen_body,weights,biases)
 cost =tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred,labels=y))
@@ -82,7 +99,8 @@ with tf.Session() as sess:
     step=1
 
     while step*batch_size<training_iters:
-        print(step)
+        print("step:",step)
+
         batch_x_title,batch_x_body,batch_y,batch_seqlen_title,batch_seqlen_body=trainset.next(batch_size)
         sess.run(optimizer,feed_dict={x_title:batch_x_title,x_body:batch_x_body,y:batch_y,seqlen_title:batch_seqlen_title,seqlen_body:batch_seqlen_body})
         if step%display_step==0:
