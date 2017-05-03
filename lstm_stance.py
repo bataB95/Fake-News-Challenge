@@ -79,11 +79,8 @@ def dynamicRNN(x_title,x_body,seqlen_title,seqlen_body,weights,biases):
         print("testing_2")
         outputs_body,states_body=tf.nn.dynamic_rnn(cell=lstm_cell,inputs=x_body,sequence_length=seqlen_body,dtype=tf.float32)
         print("testing_3")
-        temp1=[]
-        temp2=[]
-        for i in range(batch_size):
-            temp1.append([i,seqlen_title[i]-1])
-            temp2.append([i,seqlen_body[i]-1])
+        temp1=tf.stack([tf.range(tf.shape(seqlen_title)[0]),seqlen_title-1],axis=1)
+        temp2=tf.stack([tf.range(tf.shape(seqlen_body)[0]),seqlen_body-1],axis=1)
         return tf.matmul(tf.multiply(tf.gather_nd(outputs_title,temp1),tf.gather_nd(outputs_body,temp2)),weights['out'])+biases['out']
 
 pred=dynamicRNN(x_title,x_body,seqlen_title,seqlen_body,weights,biases)
