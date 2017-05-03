@@ -57,8 +57,11 @@ bodyReader=None
 stances=None
 bodies=None
 print("Start embedding\n")
-with open('data.p', "wb") as embedded_data:
-    data=[] 
+
+with open('data_related.p', "wb") as embedded_data_related:
+    embedded_data_stances=open('data_stances.p','wb')
+    data_related=[]
+    data_stances=[] 
     for sample in raw_training_set:
         title=sample[0].split()
         body=sample[1].split()
@@ -75,16 +78,28 @@ with open('data.p', "wb") as embedded_data:
             if body[i] in wordVec:
                 word=wordVec[body[i]]
                 bodyVec.append(word)
-        if label == "unrelated":
-            label=[1,0,0,0]
-        if label == "discuss":
-            label=[0,1,0,0]
-        if label == "agree":
-            label=[0,0,1,0]
-        if label == "disagree":
-            label=[0,0,0,1]
-        data.append([titleVec,bodyVec,label])
-    pickle.dump(np.array(data),embedded_data)
+        # if label == "unrelated":
+        #     label=[1,0,0,0]
+        # if label == "discuss":
+        #     label=[0,1,0,0]
+        # if label == "agree":
+        #     label=[0,0,1,0]
+        # if label == "disagree":
+        #     label=[0,0,0,1]
+        if label =="unrelated":
+            data_related.append([titleVec,bodyVec,[1,0]])
+        else:
+            data_related.append([titleVec,bodyVec,[0,1]])
+            if label == "discuss":
+                label=[1,0,0]
+            if label == "agree":
+                label=[0,1,0]
+            if label == "disagree":
+                label=[0,0,1]
+            data_stances.append([titleVec,bodyVec,label])
+        #data.append([titleVec,bodyVec,label])
+    pickle.dump(np.array(data_related),embedded_data_related)
+    pickle.dump(np.array(data_stances),embedded_data_stances)
 
 """
 print("Finish loading training stanes and training bodies\n")
