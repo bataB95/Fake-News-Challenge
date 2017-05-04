@@ -45,8 +45,7 @@ class dataWrapper:
 data=pickle.load(open("data_related.p","rb"))
 size=len(data)
 trainset=dataWrapper(data[size//3:])
-testset=dataWrapper(data[:size//3])
-
+testset=dataWrapper(data[:size//3000])
 #network parameters
 learning_rate=0.001
 #training_iters=100000
@@ -94,24 +93,9 @@ accuracy=tf.reduce_mean(tf.cast(correct_pred,tf.float32))
 init=tf.global_variables_initializer()
 saver=tf.train.Saver()
 with tf.Session() as sess:
-    sess.run(init)
-    step=1
-
-    while step*batch_size<training_iters:
-        print("step:",step)
-
-        batch_x_title,batch_x_body,batch_y,batch_seqlen_title,batch_seqlen_body=trainset.next(batch_size)
-        sess.run(optimizer,feed_dict={x_title:batch_x_title,x_body:batch_x_body,y:batch_y,seqlen_title:batch_seqlen_title,seqlen_body:batch_seqlen_body})
-        if step%display_step==0:
-            acc=sess.run(accuracy,feed_dict={x_title:batch_x_title,x_body:batch_x_body,y:batch_y,seqlen_title:batch_seqlen_title,seqlen_body:batch_seqlen_body})
-            loss=sess.run(cost,feed_dict={x_title:batch_x_title,x_body:batch_x_body,y:batch_y,seqlen_title:batch_seqlen_title,seqlen_body:batch_seqlen_body})
-            print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
-                  "{:.6f}".format(loss) + ", Training Accuracy= " + \
-                  "{:.5f}".format(acc))
-        step+=1
-    print("Optimization Finished!")
-    save_path = saver.save(sess, "/tmp/model_related.ckpt")
-    print("Model saved in file: %s" % save_path)
+    saver.restore(sess, "/tmp/model_related.ckpt")
+    print("Model restored.")
+    print(len(testset.x_title))
     test_x_title=testset.x_title
     test_x_body=testset.x_body
     test_y=testset.y
@@ -119,3 +103,9 @@ with tf.Session() as sess:
     test_seqlen_body=testset.seqlen_body
     print("Test Accuracy:",sess.run(accuracy,feed_dict={x_title:test_x_title,x_body:test_x_body,y:test_y,seqlen_title:test_seqlen_title,seqlen_body:test_seqlen_body}))
    
+
+
+
+
+
+

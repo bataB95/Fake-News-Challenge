@@ -18,7 +18,7 @@ class dataWrapper:
             self.y.append(sample[2])
             self.seqlen_title.append(len(sample[0]))
             self.seqlen_body.append(len(sample[1]))
-        max_seqlen=max(self.seqlen_body+self.seqlen_title)
+        max_seqlen=6000
         #padding the samples with zero vectors
         for i in range(len(self.x_title)):
             self.x_title[i]+=[[0]*50]*(max_seqlen-len(self.x_title[i]))
@@ -53,7 +53,7 @@ training_iters=100000
 batch_size=128
 display_step=10
 
-seq_max_len=max(trainset.max_seqlen(),testset.max_seqlen())
+seq_max_len=6000
 n_input=50
 n_hidden=60
 n_classes=3
@@ -91,7 +91,7 @@ correct_pred=tf.equal(tf.argmax(pred,1),tf.argmax(y,1))
 accuracy=tf.reduce_mean(tf.cast(correct_pred,tf.float32))
 
 init=tf.global_variables_initializer()
-
+saver=tf.train.Saver()
 with tf.Session() as sess:
     sess.run(init)
     step=1
@@ -109,12 +109,12 @@ with tf.Session() as sess:
                   "{:.5f}".format(acc))
         step+=1
     print("Optimization Finished!")
-
-test_x_title=testset.x_title
-test_x_body=testset.x_body
-test_y=testset.y
-test_seqlen_title=testset.seqlen_title
-test_seqlen_body=testset.seqlen_body
-
-print("Test Accuracy:",sess.run(accuracy,feed_dict={x_title:test_x_title,x_body:test_x_body,y:test_y,seqlen_title:test_seqlen_title,seqlen_body:test_seqlen_body}))
+    save_path = saver.save(sess, "/tmp/model_stance.ckpt")
+    print("Model saved in file: %s" % save_path)
+    test_x_title=testset.x_title
+    test_x_body=testset.x_body
+    test_y=testset.y
+    test_seqlen_title=testset.seqlen_title
+    test_seqlen_body=testset.seqlen_body
+    print("Test Accuracy:",sess.run(accuracy,feed_dict={x_title:test_x_title,x_body:test_x_body,y:test_y,seqlen_title:test_seqlen_title,seqlen_body:test_seqlen_body}))
    
