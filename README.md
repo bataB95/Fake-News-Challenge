@@ -14,7 +14,7 @@ Step 1: Embed all the words into vector representation and add them to, for each
 
 Step 2: Feed the two vectors to a decision making network(classification) that has four output categories(unrelated,supportive , neutral, contradictory)  
   
-LSTM:
+LSTM:  
 Step 1:Same as above  
 
 Step 2:Encode two texts with lstm, feed the product of the encoded texts,which are two vectors of the same dimensions as the number of the hidden units of the lstm, to the soft-max classifier  
